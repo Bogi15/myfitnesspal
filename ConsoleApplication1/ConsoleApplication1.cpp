@@ -26,7 +26,12 @@ void mainMenu() {
         cout << "2. Log In\n";
         cout << "3. Close Application\n";
         cout << "Enter your choice: ";
-        cin >> choice;
+
+        while (!(cin >> choice) || choice < 1 || choice > 3) {
+            cout << "Invalid choice. Select a number between 1 and 3: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
 
         switch (choice) {
         case 1:
