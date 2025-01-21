@@ -126,12 +126,31 @@ void signUp(vector<User>& users) {
     cout << "Enter gender (M/F): ";
     cin >> newUser.gender;
 
+    while (!(newUser.gender == 'M' || newUser.gender == 'F')) {
+        cout << "Invalid input. Enter a gender with the specific letter: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> newUser.gender;
+    }
+
     cout << "Enter height (in cm): ";
     cin >> newUser.height;
+
+    while (!(cin >> newUser.height) || (newUser.height <= 0)) {
+        cout << "Invalid input. Enter a valid height: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 
     cout << "Enter weight (in kg): ";
     cin >> newUser.weight;
 
+    while (!(cin >> newUser.weight) || (newUser.weight <= 0)) {
+        cout << "Invalid input. Enter a valid height: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    
     // Activity Level
     cout << "Select your activity level:\n";
     cout << "1. Seated work\n";
@@ -174,15 +193,18 @@ void signUp(vector<User>& users) {
         cout << "4. 1.00 kg per week\n";
         cout << "Enter your choice: ";
         int amountPerWeekChoiceLose;
-        cin >> amountPerWeekChoiceLose;
+
+        while (!(cin >> amountPerWeekChoiceLose) || amountPerWeekChoiceLose < 1 || amountPerWeekChoiceLose > 4) {
+            cout << "Invalid choice. Select a number between 1 and 4: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        
         switch (amountPerWeekChoiceLose) {
         case 1: newUser.calorieDifferenceFromMaintenance = -275; break;
         case 2: newUser.calorieDifferenceFromMaintenance = -550; break;
         case 3: newUser.calorieDifferenceFromMaintenance = -825; break;
         case 4: newUser.calorieDifferenceFromMaintenance = -1100; break;
-        default:
-            cout << "Invalid choice. Defaulting to 0.25 kg per week.\n";
-            newUser.calorieDifferenceFromMaintenance = -275;
         }
         break;
     case 2: newUser.goal = "Keep weight"; break;
@@ -196,20 +218,20 @@ void signUp(vector<User>& users) {
         cout << "4. 1.00 kg per week\n";
         cout << "Enter your choice: ";
         int amountPerWeekChoiceGain;
-        cin >> amountPerWeekChoiceGain;
+
+        while (!(cin >> amountPerWeekChoiceGain) || amountPerWeekChoiceGain < 1 || amountPerWeekChoiceGain > 4) {
+            cout << "Invalid choice. Select a number between 1 and 4: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        
         switch (amountPerWeekChoiceGain) {
         case 1: newUser.calorieDifferenceFromMaintenance = 275; break;
         case 2: newUser.calorieDifferenceFromMaintenance = 550; break;
         case 3: newUser.calorieDifferenceFromMaintenance = 825; break;
         case 4: newUser.calorieDifferenceFromMaintenance = 1100; break;
-        default:
-            cout << "Invalid choice. Defaulting to 0.25 kg per week.\n";
-            newUser.calorieDifferenceFromMaintenance = 275;
         }
         break;
-    default:
-        cout << "Invalid choice. Defaulting to 'Keep weight'.\n";
-        newUser.goal = "Keep weight";
     }
 
 
@@ -218,7 +240,12 @@ void signUp(vector<User>& users) {
     cout << "2. Premium\n";
     cout << "Enter your choice: ";
     int accountChoice;
-    cin >> accountChoice;
+
+    while (!(cin >> accountChoice) || accountChoice < 1 || accountChoice > 2) {
+        cout << "Invalid choice. Select a number between 1 and 2: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 
     switch (accountChoice) {
     case 1:
@@ -227,9 +254,6 @@ void signUp(vector<User>& users) {
     case 2:
         newUser.accountType = "Premium";
         break;
-    default:
-        cout << "Invalid choice. Defaulting to 'Standard'.\n";
-        newUser.accountType = "Standard";
     }
 
     newUser.BMR = calculatingBMR(newUser);
