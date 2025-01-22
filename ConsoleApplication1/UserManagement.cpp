@@ -61,37 +61,56 @@ void userMenu(User& user) {
         cout << "2. Add Workout\n";
         cout << "3. Update Meal\n";
         cout << "4. Update Workout\n";
-        cout << "5. Display Daily Intake\n";
-        cout << "6. View Daily Log\n";
-        cout << "7. View Log for Specific Date\n";
-        cout << "8. Delete Old Data\n";
-        cout << "9. Log Out\n";
+        cout << "5. Update User Info\n";
+        cout << "6. Display Daily Intake\n";
+        cout << "7. View Daily Log\n";
+        cout << "8. View Log for Specific Date\n";
+        cout << "9. Delete Old Data\n";
+        cout << "10. Log Out\n";
         cout << "Enter your choice: ";
-        cin >> choice;
+
+        while (!(cin >> choice) || choice < 1 || choice > 10) {
+            cout << "Invalid choice. Select a number between 1 and 10: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
         switch (choice) {
         case 1:
-            addMeal(user); break;
+            addMeal(user);
+            break;
         case 2:
-            addWorkout(user); break;
+            addWorkout(user);
+            break;
         case 3:
-            updateMeal(user); break;
+            updateMeal(user);
+            break;
         case 4:
-            updateWorkout(user); break;
+            updateWorkout(user);
+            break;
         case 5:
-            viewDailyLog(user); break;
+            updateUserInfo(user);
+            break;
         case 6:
-            dateLog(user, getCurrentDate());break;
+            displayDailyIntake(user);
+            break;
         case 7:
-            loadDateLog(user); break; 
+            dateLog(user, getCurrentDate());
+            break;
         case 8:
-            deleteOldDataMessage(user); break;
+            loadDateLog(user);
+            break;
         case 9:
+            deleteOldDataMessage(user);
+            break;
+        case 10:
             saveDailyData(user);
-            cout << "Logging out...\n"; break;
+            cout << "Logging out...\n";
+            break;
         default:
             cout << "Invalid choice. Please try again.\n";
         }
-    } while (choice != 9);
+    } while (choice != 10);
 }
 
 
