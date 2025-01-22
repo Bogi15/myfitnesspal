@@ -37,7 +37,7 @@ struct User {
     string username;
     string password;
     int age;
-    string gender;
+    char gender;
     double height; 
     double weight; 
     double BMR;
