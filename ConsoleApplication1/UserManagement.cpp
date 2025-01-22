@@ -165,7 +165,7 @@ void signUp(vector<User>& users) {
     cin >> newUser.weight;
 
     while (!(cin >> newUser.weight) || (newUser.weight <= 0)) {
-        cout << "Invalid input. Enter a valid height: ";
+        cout << "Invalid input. Enter a valid weight: ";
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
@@ -200,8 +200,13 @@ void signUp(vector<User>& users) {
     cout << "3. Gain weight\n";
     cout << "Enter your choice: ";
     int goalChoice;
-    cin >> goalChoice;
 
+    while (!(cin >> goalChoice) || goalChoice < 1 || goalChoice > 3) {
+        cout << "Invalid choice. Select a number between 1 and 3: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    
     switch (goalChoice) {
     case 1:
         newUser.goal = "Lose weight";
@@ -365,7 +370,7 @@ bool readFullUserFromFile(const string& filename, User& user) {
     getline(userFile, user.password);
     userFile >> user.age;
     userFile.ignore();
-    getline(userFile, user.gender);
+    userFile >> user.gender;
     userFile >> user.height;
     userFile >> user.weight;
     userFile.ignore();
@@ -970,4 +975,146 @@ void deleteOldDataMessage(User& user) {
     else {
         cout << "Failed to delete old data. Please check the date and try again.\n";
     }
+}
+
+void updateActivityLevel(User& user) {
+    cout << "Select your activity level:\n";
+    cout << "1. Seated work\n";
+    cout << "2. Mild activity\n";
+    cout << "3. Average activity\n";
+    cout << "4. Active\n";
+    cout << "5. Very active\n";
+    cout << "Enter your choice: ";
+    int activityChoice;
+    while (!(cin >> activityChoice) || activityChoice < 1 || activityChoice > 5) {
+        cout << "Invalid choice. Select a number between 1 and 5: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    switch (activityChoice) {
+    case 1: user.activityLevel = "Seated work"; break;
+    case 2: user.activityLevel = "Mild activity"; break;
+    case 3: user.activityLevel = "Average activity"; break;
+    case 4: user.activityLevel = "Active"; break;
+    case 5: user.activityLevel = "Very active"; break;
+    }
+}
+
+void updateCalorieDifference(User& user) {
+    cout << "Select your goal:\n";
+    cout << "1. Lose weight\n";
+    cout << "2. Keep weight\n";
+    cout << "3. Gain weight\n";
+    cout << "Enter your choice: ";
+    int goalChoice;
+    
+    while (!(cin >> goalChoice) || goalChoice < 1 || goalChoice > 3) {
+        cout << "Invalid choice. Select a number between 1 and 3: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    switch (goalChoice) {
+    case 1:
+        user.goal = "Lose weight";
+        cout << "Select your weekly goal:\n";
+        cout << "1. 0.25 kg per week\n";
+        cout << "2. 0.50 kg per week\n";
+        cout << "3. 0.75 kg per week\n";
+        cout << "4. 1.00 kg per week\n";
+        cout << "Enter your choice: ";
+        int amountPerWeekChoiceLose;
+
+        while (!(cin >> amountPerWeekChoiceLose) || amountPerWeekChoiceLose < 1 || amountPerWeekChoiceLose > 4) {
+            cout << "Invalid choice. Select a number between 1 and 4: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        switch (amountPerWeekChoiceLose) {
+        case 1: user.calorieDifferenceFromMaintenance = -275; break;
+        case 2: user.calorieDifferenceFromMaintenance = -550; break;
+        case 3: user.calorieDifferenceFromMaintenance = -825; break;
+        case 4: user.calorieDifferenceFromMaintenance = -1100; break;
+        }
+        break;
+    case 2: user.goal = "Keep weight"; user.calorieDifferenceFromMaintenance = 0; break;
+    case 3:
+        user.goal = "Gain weight";
+
+        cout << "Select your weekly goal:\n";
+        cout << "1. 0.25 kg per week\n";
+        cout << "2. 0.50 kg per week\n";
+        cout << "3. 0.75 kg per week\n";
+        cout << "4. 1.00 kg per week\n";
+        cout << "Enter your choice: ";
+        int amountPerWeekChoiceGain;
+            
+        while (!(cin >> amountPerWeekChoiceGain) || amountPerWeekChoiceGain < 1 || amountPerWeekChoiceGain > 4) {
+            cout << "Invalid choice. Select a number between 1 and 4: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        switch (amountPerWeekChoiceGain) {
+        case 1: user.calorieDifferenceFromMaintenance = 275; break;
+        case 2: user.calorieDifferenceFromMaintenance = 550; break;
+        case 3: user.calorieDifferenceFromMaintenance = 825; break;
+        case 4: user.calorieDifferenceFromMaintenance = 1100; break;
+        }
+        break;
+    }
+}
+
+void updateUserInfo(User& user) {
+    cout << "\n=== Update User Info ===\n";
+    cout << "1. Update Weight\n";
+    cout << "2. Update Goal\n";
+    cout << "3. Update Activity Level\n";
+    cout << "4. Cancel\n";
+    cout << "Enter your choice: ";
+    int choice;
+    
+    while (!(cin >> choice) || choice < 1 || choice > 4) {
+        cout << "Invalid choice. Select a number between 1 and 4: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    switch (choice) {
+    case 1:
+        cout << "Enter new weight (kg): ";
+        cin >> user.weight;
+        break;
+    case 2:
+        updateCalorieDifference(user);
+        break;
+    case 3:
+        updateActivityLevel(user);
+        break;
+    case 4:
+        cout << "Update canceled.\n";
+        return;
+    }
+
+
+    user.BMR = calculatingBMR(user);
+    calculatingBMRWithActivityLevels(user);
+    user.dailyCalorieGoal = calculateCalorieGoal(user);
+    calculatingMacronutrients(user);
+
+
+    cout << "User info updated successfully!\n";
+    cout << "New Daily Calorie Goal: " << user.dailyCalorieGoal << " kcal\n";
+
+    if (user.accountType == "Premium") {
+
+        cout << "New Macronutrient Goals:\n";
+        cout << "Protein: " << user.proteinsGoal << " grams\n";
+        cout << "Fats: " << user.fatsGoal << " grams\n";
+        cout << "Carbs: " << user.carbsGoal << " grams\n";
+    }
+
+    createUserFile(user);
 }
