@@ -153,7 +153,6 @@ void signUp(vector<User>& users) {
     }
 
     cout << "Enter height (in cm): ";
-    cin >> newUser.height;
 
     while (!(cin >> newUser.height) || (newUser.height <= 0)) {
         cout << "Invalid input. Enter a valid height: ";
@@ -162,7 +161,6 @@ void signUp(vector<User>& users) {
     }
 
     cout << "Enter weight (in kg): ";
-    cin >> newUser.weight;
 
     while (!(cin >> newUser.weight) || (newUser.weight <= 0)) {
         cout << "Invalid input. Enter a valid weight: ";
@@ -417,10 +415,10 @@ int calculateCalorieGoal(const User& user) {
 }
 
 double calculatingBMR(const User& user) {
-    if (user.gender == "M") {
+    if (user.gender == 'M') {
         return 88.362 + (13.397 * user.weight) + (4.799 * user.height) - (5.677 * user.age);
     }
-    if (user.gender == "F") {
+    if (user.gender == 'F') {
         return 447.593 + (9.247 * user.weight) + (3.098 * user.height) - (4.330 * user.age);
     }
 }
