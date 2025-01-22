@@ -16,44 +16,6 @@
 
 using namespace std;
 
-void userMenu(User& user);
-void closeApp();
-
-
-void signUp(vector<User>& users);
-void logIn(const vector<User>& users);
-void createUserFile(const User& newUser);
-bool readUsernameAndPassword(const string& filename, string& username, string& password);
-bool readFullUserFromFile(const string& filename, User& user);
-void saveUsernameToFile(const string& username);
-bool checkUsernameInFile(const string& username);
-int calculateCalorieGoal(const User& user);
-double calculatingBMR(const User& user);
-void calculatingBMRWithActivityLevels(User& user);
-void calculatingMacronutrients(User& user);
-
-void addMeal(User& user);
-void updateMeal(User& user);
-void addWorkout(User& user);
-void updateWorkout(User& user);
-int loadIdForMeals(User& user);
-int loadIdForWorkouts(User& user);
-void saveDailyData(const User& user);
-void loadDailyData(User& user);
-void dateLog(User& user, const string& date);
-void viewDailyLog(User& user);
-void displayDailyIntake(const User& user);
-void loadDateLog(User& user);
-
-
-string getCurrentDate();
-string generateDailyFilename(const string& username);
-int convertIdToNumber(const string& str);
-bool deleteOldData(string& username, string& date);
-void deleteOldDataMessage(User& user);
-
-
-
 void userMenu(User& user) {
     int choice;
     do {
