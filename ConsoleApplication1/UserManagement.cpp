@@ -780,6 +780,8 @@ void loadDailyData(User& user) {
     string filename = "users/" + user.username + "_daily_" + getCurrentDate() + ".txt";
     ifstream inFile(filename);
 
+    calculatingMacronutrients(user);
+    
     if (inFile.is_open()) {
         inFile >> user.dailyCalorieGoal;
         inFile >> user.caloriesEaten;
