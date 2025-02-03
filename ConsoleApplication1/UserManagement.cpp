@@ -10,6 +10,7 @@
 * */
 
 #include "UserManagement.h"
+#include "Constants.h"
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -19,6 +20,7 @@ using namespace std;
 void userMenu(User& user) {
     int choice;
     do {
+        cout << "=== User Menu ===\n";
         cout << "1. Add Meal\n";
         cout << "2. Add Workout\n";
         cout << "3. Update Meal\n";
@@ -185,10 +187,10 @@ void signUp(vector<User>& users) {
         }
         
         switch (amountPerWeekChoiceLose) {
-        case 1: newUser.calorieDifferenceFromMaintenance = -275; break;
-        case 2: newUser.calorieDifferenceFromMaintenance = -550; break;
-        case 3: newUser.calorieDifferenceFromMaintenance = -825; break;
-        case 4: newUser.calorieDifferenceFromMaintenance = -1100; break;
+        case 1: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_0_25_KG; break;
+        case 2: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_0_50_KG; break;
+        case 3: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_0_75_KG; break;
+        case 4: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_1_00_KG; break;
         }
         break;
     case 2: newUser.goal = "Keep weight"; break;
@@ -210,10 +212,10 @@ void signUp(vector<User>& users) {
         }
         
         switch (amountPerWeekChoiceGain) {
-        case 1: newUser.calorieDifferenceFromMaintenance = 275; break;
-        case 2: newUser.calorieDifferenceFromMaintenance = 550; break;
-        case 3: newUser.calorieDifferenceFromMaintenance = 825; break;
-        case 4: newUser.calorieDifferenceFromMaintenance = 1100; break;
+        case 1: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_0_25_KG; break;
+        case 2: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_0_50_KG; break;
+        case 3: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_0_75_KG; break;
+        case 4: newUser.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_1_00_KG; break;
         }
         break;
     }
@@ -266,7 +268,11 @@ void logIn(const vector<User>& users) {
             User user;
             if (readFullUserFromFile(filename, user)) {
                 loadDailyData(user);
+                cout << endl;
+                
                 cout << "Login successful! Welcome, " << user.username << ".\n";
+                cout << endl;
+                
                 userMenu(user);
             }
             else {
@@ -378,44 +384,45 @@ int calculateCalorieGoal(const User& user) {
 
 double calculatingBMR(const User& user) {
     if (user.gender == 'M') {
-        return 88.362 + (13.397 * user.weight) + (4.799 * user.height) - (5.677 * user.age);
+        return MALE_BMR_BASE + (MALE_BMR_WEIGHT_FACTOR * user.weight) + (MALE_BMR_HEIGHT_FACTOR * user.height) - (MALE_BMR_AGE_FACTOR * user.age);
     }
     if (user.gender == 'F') {
-        return 447.593 + (9.247 * user.weight) + (3.098 * user.height) - (4.330 * user.age);
+        return FEMALE_BMR_BASE + (FEMALE_BMR_WEIGHT_FACTOR * user.weight) + (FEMALE_BMR_HEIGHT_FACTOR * user.height) - (FEMALE_BMR_AGE_FACTOR * user.age);
     }
 }
 
 void calculatingBMRWithActivityLevels(User& user) {
-    if (user.activityLevel == "Seated work") user.BMR = user.BMR * 1.2;
-    if (user.activityLevel == "Mild activity") user.BMR = user.BMR * 1.375;
-    if (user.activityLevel == "Average activity") user.BMR = user.BMR * 1.55;
-    if (user.activityLevel == "Active") user.BMR = user.BMR * 1.725;
-    if (user.activityLevel == "Very active") user.BMR = user.BMR * 1.9;
+     if (user.activityLevel == "Seated work") user.BMR = user.BMR * SEATED_WORK_MULTIPLIER;
+     if (user.activityLevel == "Mild activity") user.BMR = user.BMR * MILD_ACTIVITY_MULTIPLIER;
+     if (user.activityLevel == "Average activity") user.BMR = user.BMR * AVERAGE_ACTIVITY_MULTIPLIER;
+     if (user.activityLevel == "Active") user.BMR = user.BMR * ACTIVE_MULTIPLIER;
+     if (user.activityLevel == "Very active") user.BMR = user.BMR * VERY_ACTIVE_MULTIPLIER;
 }
 
 void calculatingMacronutrients(User& user) {
     int dailyCaloriesGoal = user.dailyCalorieGoal;
     string goal = user.goal;
     if (goal == "Lose weight") {
-        user.carbsGoal = (0.35 * dailyCaloriesGoal) / 4;
-        user.proteinsGoal = (0.35 * dailyCaloriesGoal) / 4;
-        user.fatsGoal = (0.30 * dailyCaloriesGoal) / 9;
+        user.carbsGoal = (LOSE_WEIGHT_CARBS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_CARBS;
+        user.proteinsGoal = (LOSE_WEIGHT_PROTEINS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_PROTEINS;
+        user.fatsGoal = (LOSE_WEIGHT_FATS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_FATS;
     }
     else if (goal == "Keep weight") {
-        user.carbsGoal = (0.45 * dailyCaloriesGoal) / 4;
-        user.proteinsGoal = (0.25 * dailyCaloriesGoal) / 4;
-        user.fatsGoal = (0.30 * dailyCaloriesGoal) / 9;
+        user.carbsGoal = (KEEP_WEIGHT_CARBS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_CARBS;
+        user.proteinsGoal = (KEEP_WEIGHT_PROTEINS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_PROTEINS;
+        user.fatsGoal = (KEEP_WEIGHT_FATS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_FATS;
     }
     else {
-        user.carbsGoal = (0.35 * dailyCaloriesGoal) / 4;
-        user.proteinsGoal = (0.40 * dailyCaloriesGoal) / 4;
-        user.fatsGoal = (0.25 * dailyCaloriesGoal) / 9;
+        user.carbsGoal = (GAIN_WEIGHT_CARBS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_CARBS;
+        user.proteinsGoal = (GAIN_WEIGHT_PROTEINS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_PROTEINS;
+        user.fatsGoal = (GAIN_WEIGHT_FATS_RATIO * dailyCaloriesGoal) / CALORIES_PER_GRAM_FATS;
     }
 }
 
 void addMeal(User& user) {
     Meal meal;
     meal.id = loadIdForMeals(user) + 1;
+    cout << "\n=== Add Meal ===\n";
     cout << "Enter meal name: ";
     cin.ignore();
     getline(cin, meal.name);
@@ -439,7 +446,7 @@ void addMeal(User& user) {
     }
 
     user.meals.push_back(meal);
-    cout << "Meal added successfully!\n";
+    cout << "Meal added successfully!\n" << endl;
 
 
     string filename = "users/" + user.username + "_meals_" + getCurrentDate() + ".txt";
@@ -494,8 +501,8 @@ void updateMeal(User& user) {
         return;
     }
 
-
-    cout << "\nSelect a meal to update:\n";
+    cout << "\n=== Update Meal===\n";
+    cout << "Select a meal to update:\n";
     for (const Meal& meal : meals) {
         cout << meal.id << ". " << meal.name << " - " << meal.calories << " kcal";
         if (user.accountType == "Premium") {
@@ -564,7 +571,7 @@ void updateMeal(User& user) {
             }
         }
         outFile.close();
-        cout << "Meal updated successfully!\n";
+        cout << "Meal updated successfully!\n" << endl;
     }
     else {
         cout << "Unable to open file to save meal data!" << endl;
@@ -574,6 +581,7 @@ void updateMeal(User& user) {
 void addWorkout(User& user) {
     Workout workout;
     workout.id = loadIdForWorkouts(user) + 1;
+    cout << "\n=== Add Workout ===\n";
     cout << "Enter workout name: ";
     cin.ignore();
     getline(cin, workout.name);
@@ -602,7 +610,7 @@ void updateWorkout(User& user) {
 
     string currentDate = getCurrentDate();
 
-
+    
     string workoutsFilename = "users/" + user.username + "_workouts_" + currentDate + ".txt";
     ifstream workoutsFile(workoutsFilename);
     vector<Workout> workouts;
@@ -626,8 +634,8 @@ void updateWorkout(User& user) {
         return;
     }
 
-
-    cout << "\nSelect a workout to update:\n";
+    cout << "\n=== Update Workout ===\n";
+    cout << "Select a workout to update:\n";
     for (const Workout& workout : workouts) {
         cout << workout.id << ". " << workout.name << " - " << workout.caloriesBurned << " kcal burned" << endl;
     }
@@ -665,7 +673,7 @@ void updateWorkout(User& user) {
             outFile << workout.caloriesBurned << endl;
         }
         outFile.close();
-        cout << "Workout updated successfully!\n";
+        cout << "Workout updated successfully!\n" << endl;
     }
     else {
         cout << "Unable to open file to save workout data!" << endl;
@@ -872,7 +880,7 @@ void displayDailyIntake(const User& user) {
 
 void loadDateLog(User& user) {
     string date;
-    cout << "Enter the date (YYYY-MM-DD) for the log you want to view: ";
+    cout << "\nEnter the date (YYYY-MM-DD) for the log you want to view: ";
     cin >> date;
     dateLog(user, date);
 }
@@ -906,7 +914,8 @@ int convertIdToNumber(const string& str) {
 bool deleteOldData(string& username, string& date) {
     string mealsFilename = "users/" + username + "_meals_" + date + ".txt";
     string workoutsFilename = "users/" + username + "_workouts_" + date + ".txt";
-    bool mealsDeleted = false, workoutsDeleted = false;
+    string dailyFilename = "users/" + username + "_daily_" + date + ".txt";
+    bool mealsDeleted = false, workoutsDeleted = false, dailyDeleted = false;
 
     if (!remove(mealsFilename.c_str())) {
         cout << "Deleted meal file: " << mealsFilename << endl;
@@ -924,22 +933,31 @@ bool deleteOldData(string& username, string& date) {
         cout << "Could not delete workout file: " << workoutsFilename << endl;
     }
 
-    return mealsDeleted || workoutsDeleted;
+    if (!remove(dailyFilename.c_str())) {
+        cout << "Deleted daily file: " << dailyFilename << endl;
+        dailyDeleted = true;
+    }
+    else {
+        cout << "Could not delete daily file: " << dailyFilename << endl;
+    }
+
+    return mealsDeleted || workoutsDeleted || dailyDeleted;
 }
 
 void deleteOldDataMessage(User& user) {
     string date;
-    cout << "Enter the date (YYYY-MM-DD) for the data you want to delete: ";
+    cout << "\nEnter the date (YYYY-MM-DD) for the data you want to delete: ";
     cin >> date;
     if (deleteOldData(user.username, date)) {
-        cout << "Old data deleted successfully.\n";
+        cout << "Old data deleted successfully.\n" << endl;
     }
     else {
-        cout << "Failed to delete old data. Please check the date and try again.\n";
+        cout << "Failed to delete old data. Please check the date and try again.\n" << endl;
     }
 }
 
 void updateActivityLevel(User& user) {
+    cout << "\n=== Update Activity Level===\n";
     cout << "Select your activity level:\n";
     cout << "1. Seated work\n";
     cout << "2. Mild activity\n";
@@ -964,6 +982,7 @@ void updateActivityLevel(User& user) {
 }
 
 void updateCalorieDifference(User& user) {
+    cout << "\n=== Update Goal===\n";
     cout << "Select your goal:\n";
     cout << "1. Lose weight\n";
     cout << "2. Keep weight\n";
@@ -995,10 +1014,10 @@ void updateCalorieDifference(User& user) {
         }
 
         switch (amountPerWeekChoiceLose) {
-        case 1: user.calorieDifferenceFromMaintenance = -275; break;
-        case 2: user.calorieDifferenceFromMaintenance = -550; break;
-        case 3: user.calorieDifferenceFromMaintenance = -825; break;
-        case 4: user.calorieDifferenceFromMaintenance = -1100; break;
+        case 1: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_0_25_KG; break;
+        case 2: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_0_50_KG; break;
+        case 3: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_0_75_KG; break;
+        case 4: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_LOSE_1_00_KG; break;
         }
         break;
     case 2: user.goal = "Keep weight"; user.calorieDifferenceFromMaintenance = 0; break;
@@ -1020,10 +1039,10 @@ void updateCalorieDifference(User& user) {
         }
 
         switch (amountPerWeekChoiceGain) {
-        case 1: user.calorieDifferenceFromMaintenance = 275; break;
-        case 2: user.calorieDifferenceFromMaintenance = 550; break;
-        case 3: user.calorieDifferenceFromMaintenance = 825; break;
-        case 4: user.calorieDifferenceFromMaintenance = 1100; break;
+        case 1: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_0_25_KG; break;
+        case 2: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_0_50_KG; break;
+        case 3: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_0_75_KG; break;
+        case 4: user.calorieDifferenceFromMaintenance = CALORIE_DIFFERENCE_GAIN_1_00_KG; break;
         }
         break;
     }
